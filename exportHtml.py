@@ -6,12 +6,7 @@ def generateHtml(items):
     dt = now.strftime("%m/%d/%Y %H:%M:%S")
     tbody = "<tbody>"
     thead = "<thead>"
-    keys = set()
-
-    for item in items:
-        for k in item.keys():
-            keys.add(k)
-
+    keys = ["name", "role", "level", "Weekly Prestige", "From Vault Defense", "From Contribution", "From Daily Goals", "lastOnline"]
     for k in keys:
         thead = thead + f"<th>{k}</th>"
     thead = thead + "</thead>"
