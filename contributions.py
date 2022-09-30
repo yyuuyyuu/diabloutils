@@ -51,7 +51,7 @@ def scrapeContributions():
             items.append(newItem)
             writeJson(items, "contributions.json")
 
-    items = readJson("contributions.json") or []
+    items = []
 
     for n in range(0, 295):
         item = {}
