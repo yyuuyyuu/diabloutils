@@ -22,7 +22,8 @@ def scrapeContributions():
         boxY = 509 + row * DELTA_Y
         if row == 4:
             boxY = 1146
-        txt = captureText(1095,boxY,592,213).strip()
+        txt = captureText(1095,boxY,592,225).strip()
+
         pyautogui.rightClick()
 
         for line in txt.split("\n"):
@@ -35,9 +36,10 @@ def scrapeContributions():
     def scrapeItem(row = 0, item = {}):
         if row <= 0:
             row = 0
-
+        pyautogui.rightClick()
         name, level = re.split("\n?Rank:?",captureText(913,421 + row * DELTA_Y,317,116))
         item['name'] = name.replace('-', '').replace('.', '')
+        print(item['name'])
         role = captureText(1322,414 + row * DELTA_Y,470,140)
         item['role'] = role
         lastOnline = captureText(2107,418 + row * DELTA_Y,355,125)
@@ -48,9 +50,9 @@ def scrapeContributions():
         if not next((item for item in items if item["name"] == newItem["name"]), False):
             items.append(newItem)
             writeJson(items, "contributions.json")
-            print('saved', newItem['name'])
+
     items = readJson("contributions.json") or []
-    
+
     for n in range(0, 295):
         item = {}
         if n == 0:
@@ -61,17 +63,14 @@ def scrapeContributions():
             scrapeDetails(1, item)
             nextDown()
             scrapeItem(0, item)
-        print(item)
         saveItem(item)
-        
+
     for n in range(0, 5):
         item = {}
         scrapeItem(n, item)
         scrapeDetails(n, item)
-        print(item)
         saveItem(item)
 
-    print(items)
     df = pd.read_json("contributions.json")
     df.to_csv("contributions.csv")
 

@@ -9,16 +9,14 @@ from PIL import Image
 import pytesseract
 from pathlib import Path
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pyautogui.PAUSE = 0.01
+#pyautogui.PAUSE = 0.01
 
 def writeJson(data, filepath):
     with open(filepath, "w+") as outfile:
-        print(data)
         outfile.write(json.dumps(data, indent=2))
         outfile.close()
 
 def readJson(filepath):
-    print(filepath)
     f = Path(filepath)
     if f.is_file():
         with open(f, "r") as ff:
@@ -45,11 +43,14 @@ def click(x, y):
     pyautogui.click()
     time.sleep(0.1)
 
-def capture(region):
+def capture(region, save=False):
     with mss.mss() as sct:
         reg = { 'left': region[0], 'top': region[1], 'width': region[2], 'height': region[3] }
         img = sct.grab(reg)
-        return Image.frombytes("RGB", img.size, img.bgra, "raw", "BGRX")
+        img2 = Image.frombytes("RGB", img.size, img.bgra, "raw", "BGRX")
+        if save:
+            img2.save("test.png")
+        return img2
         #mss.tools.to_png(img.rgb, img.size, output=name)
 
 def nums(s):
@@ -60,8 +61,8 @@ def nums(s):
         i = 0
     return i
 
-def captureText(left, top, width, height):
+def captureText(left, top, width, height, config = '-c tessedit_char_whitelist=\(\)0123456789abcdefghijklmnopqrstuvwxyz\ ABCDEFGHIJKLMNOPQRSTUVWXYZ%.:+'):
     l, t = scale(left, top)
     w, h = scale(width, height)
     img = capture((l,t,w,h))
-    return pytesseract.image_to_string(img, config='-c tessedit_char_whitelist=\(\)0123456789abcdefghijklmnopqrstuvwxyz\ ABCDEFGHIJKLMNOPQRSTUVWXYZ%.:+').strip()
+    return pytesseract.image_to_string(img, config=config).strip()
