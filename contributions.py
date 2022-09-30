@@ -3,6 +3,7 @@ import time
 import re
 import pandas as pd
 import pyautogui
+from exportHtml import *
 
 def nextDown():
     #pyautogui.moveTo(1280, 720)
@@ -58,7 +59,6 @@ def scrapeContributions():
         if n == 0:
             scrapeItem(0, item)
             scrapeDetails(0, item)
-            nextDown()
         else:
             scrapeDetails(1, item)
             nextDown()
@@ -73,6 +73,7 @@ def scrapeContributions():
 
     df = pd.read_json("contributions.json")
     df.to_csv("contributions.csv")
+    generateHtml(items)
 
 scrapeContributions()
 #df = pd.read_json("contributions.json")
